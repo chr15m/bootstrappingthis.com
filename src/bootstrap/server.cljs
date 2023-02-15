@@ -15,14 +15,15 @@
 (def default-template (fs/readFileSync "public/template/index.html"))
 
 (defn component-homepage []
-  [:section.ui-section-hero
-   [:div.ui-layout-container
-    [:div.ui-layout-column-6.ui-layout-column-center
-     [:h1 "Coming soon. Maybe."]]]])
+  [:<>
+   [:section.ui-section-hero
+    [:div.ui-layout-container
+     [:div.ui-layout-column-6.ui-layout-column-center
+      [:h1 "Coming soon. Maybe."]]]]
+   #_ [:script {:src "/js/main.js"}]])
 
 (defn start [_req res]
-  (.send res
-         (render-into template "main" [component-homepage])))
+  (.send res (render-into template "main" [component-homepage])))
 
 (defn setup-routes [app]
   (web/reset-routes app)

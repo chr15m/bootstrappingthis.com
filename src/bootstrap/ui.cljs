@@ -4,19 +4,19 @@
 
 (defonce state (r/atom {}))
 
-(defn button-clicked [_ev]
-  (swap! state update-in [:number] inc))
-
-(defn component-main [state]
-  [:div
-   [:h1 "Validate your startup idea"]
-   [:p "Create a simple landing page to validate your startup idea."]
-   [:a {:href "/start"} "Create your page"]
-   [:button {:on-click button-clicked} "click me"]])
+(defn component-main []
+  [:<>
+   [:section.ui-section-hero
+    [:div.ui-layout-container
+     [:div.ui-layout-column-6.ui-layout-column-center
+      [:h1 "Your landing page"]
+      [:p [:input {:placeholder "Your startup name"}]]
+      [:p [:input {:placeholder "Your unique landing page URL"}]]
+      [:button "Create your page"]]]]])
 
 (defn start {:dev/after-load true} []
   (rdom/render [component-main state]
-               (js/document.getElementById "app")))
+               (js/document.querySelector "main")))
 
 (defn main! []
   (start))
