@@ -22,5 +22,8 @@
     "sitefox": "github:chr15m/sitefox",
     "sqlite3": "5.0.2",
     "tmp": "0.2.1"
+  },
+  "scripts": {
+    "serve-live": "cd build && node server.js"
   }
 }
