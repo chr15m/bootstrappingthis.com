@@ -1,0 +1,10 @@
+.*.swp
+.shadow-cljs
+.clj-kondo/.cache
+public/js
+database.sqlite
+devserver.js
+logs
+node_modules
+*lock*
+workspace
