@@ -12,7 +12,6 @@
 (defonce server (atom nil))
 
 (def template (fs/readFileSync "public/index.html"))
-; (def default-template (fs/readFileSync "public/template/index.html"))
 
 (defn component-homepage []
   [:<>
@@ -22,21 +21,30 @@
       [:h1 "App loading."]]]]
    [:script {:src "/js/main.js"}]])
 
+(defn component-email-box []
+  [:<>
+   [:form {:action "/sign-up" :class "ui-component-form ui-layout-grid ui-layout-column-4"}
+    [:input {:type "email" :placeholder "Email" :class "ui-component-input ui-component-input-medium" :required true}]
+    [:button {:type "submit" :class "ui-component-button ui-component-button-medium ui-component-button-primary"} "Join waitlist"]]
+   [:p {:class "ui-text-note"} [:small "Some encouraging words."]]])
+
 (defn start [_req res]
   (.send res
          (-> template
              (.toString)
              (select-apply
-               [".ui-section-header__layout>span" :setHTML [:a {:href "https://bootstrappingthis.com"} "bootstrappingthis.com"]]
-               ["body" :appendChild (parse (render
-                                             [:<>
-                                              [:link {:rel "stylesheet" :href "/overlay.css"}]
-                                              [:div#ui-overlay]
-                                              [:script {:src "/js/main.js"}]]))]))))
+               [".ui-section-header__layout>span" :setHTML
+                [:a {:href "https://bootstrappingthis.com"} "bootstrappingthis.com"]]
+               [".ui-component-cta.ui-layout-flex" :setHTML [component-email-box]]
+               ["body" :appendChild
+                (parse (render
+                         [:<>
+                          [:link {:rel "stylesheet" :href "/overlay.css"}]
+                          [:div#ui-overlay]
+                          [:script {:src "/js/main.js"}]]))]))))
 
 (defn setup-routes [app]
   (web/reset-routes app)
-  ;(j/call app :get "/$" #(.send %2 (render-into template "body" [component-homepage])))
   (j/call app :get "/start" start)
   (web/static-folder app "/" "public"))
 

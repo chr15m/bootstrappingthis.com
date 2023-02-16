@@ -46,6 +46,7 @@ TABLE OF CONTENT
   --ui-color-n-000: #fff;
   --ui-color-n-025: #fafafa;
   --ui-color-n-050: #f5f5f5;
+  --ui-color-n-100: #ebebeb;
   --ui-color-n-300: #aeaeae;
   --ui-color-n-500: #353535;
   --ui-color-n-900: #1a1a1a;
@@ -62,6 +63,10 @@ TABLE OF CONTENT
   --ui-color-typography-body   : var(--ui-color-n-900);
   --ui-color-typography-note   : var(--ui-color-n-300);
   --ui-color-typography-button : var(--ui-color-n-000);
+
+  /* FORM COLOR */
+
+  --ui-color-form-input: var(--ui-color-n-100);
 
   /*------------------------------------------------------------
   |
@@ -111,6 +116,7 @@ TABLE OF CONTENT
   
   --ui-radius-avatar: 5rem;
   --ui-radius-button: 5rem;
+  --ui-radius-input : 5rem;
 
 }
 
@@ -248,6 +254,11 @@ svg {
 .ui-component-button-primary {
   background-color: var(--ui-color-brand);
   color: var(--ui-color-typography-button);
+}
+
+.ui-component-button-medium {
+  padding: .625rem .875rem .75rem;
+  width: fit-content;
 }
 
 .ui-component-button-normal {
@@ -811,6 +822,34 @@ svg {
 
 }
 
+/*** imported from "grid" theme ***/
+
+/* FORM */
+
+form { width: 100%; }
+
+.ui-component-form {
+  background-color: var(--ui-color-form-input);
+  border-radius: var(--ui-radius-input);
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: .25rem;
+}
+
+/* INPUT */
+
+::placeholder { color: var(--ui-color-typography-note); }
+
+.ui-component-input {
+  background-color: var(--ui-color-form-input);
+  border: .0625rem solid var(--ui-color-form-input);
+  border-radius: var(--ui-radius-input);
+}
+
+.ui-component-input-medium {
+  height: 2.5rem;
+  padding: .625rem 1rem .75rem;
+}
+
 /* customizations */
 
 #logo {
@@ -822,7 +861,7 @@ h1, h2 {
   font-family: "Fredoka One";
 }
 
-a.ui-component-button {
+a.ui-component-button, button {
   font-family: "Fredoka One";
   letter-spacing: .05em;
   font-weight: normal;
