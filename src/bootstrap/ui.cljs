@@ -6,17 +6,11 @@
 
 (defn component-main []
   [:<>
-   [:section.ui-section-hero
-    [:div.ui-layout-container
-     [:div.ui-layout-column-6.ui-layout-column-center
-      [:h1 "Your landing page"]
-      [:p [:input {:placeholder "Your startup name"}]]
-      [:p [:input {:placeholder "Your unique landing page URL"}]]
-      [:button "Create your page"]]]]])
+   [:div "Page editor"]
+   [:div "Hide this"]])
 
 (defn start {:dev/after-load true} []
-  (rdom/render [component-main state]
-               (js/document.querySelector "main")))
+  (rdom/render [component-main state] (js/document.querySelector "#ui-overlay")))
 
 (defn main! []
   (start))

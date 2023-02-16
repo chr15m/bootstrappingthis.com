@@ -3,7 +3,7 @@
     ["fs" :as fs]
     [applied-science.js-interop :as j]
     [promesa.core :as p]
-    [sitefox.html :refer [render-into]]
+    [sitefox.html :refer [render parse select-apply]]
     [sitefox.web :as web]
     [sitefox.logging :refer [bind-console-to-file]]))
 
@@ -12,18 +12,27 @@
 (defonce server (atom nil))
 
 (def template (fs/readFileSync "public/index.html"))
-(def default-template (fs/readFileSync "public/template/index.html"))
+; (def default-template (fs/readFileSync "public/template/index.html"))
 
 (defn component-homepage []
   [:<>
    [:section.ui-section-hero
     [:div.ui-layout-container
      [:div.ui-layout-column-6.ui-layout-column-center
-      [:h1 "Coming soon. Maybe."]]]]
-   #_ [:script {:src "/js/main.js"}]])
+      [:h1 "App loading."]]]]
+   [:script {:src "/js/main.js"}]])
 
 (defn start [_req res]
-  (.send res (render-into template "main" [component-homepage])))
+  (.send res
+         (-> template
+             (.toString)
+             (select-apply
+               [".ui-section-header__layout>span" :setHTML [:a {:href "https://bootstrappingthis.com"} "bootstrappingthis.com"]]
+               ["body" :appendChild (parse (render
+                                             [:<>
+                                              [:link {:rel "stylesheet" :href "/overlay.css"}]
+                                              [:div#ui-overlay]
+                                              [:script {:src "/js/main.js"}]]))]))))
 
 (defn setup-routes [app]
   (web/reset-routes app)
