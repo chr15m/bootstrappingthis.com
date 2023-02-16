@@ -818,7 +818,7 @@ svg {
   height: 64px;
 }
 
-h1 {
+h1, h2 {
   font-family: "Fredoka One";
 }
 
@@ -830,4 +830,9 @@ a.ui-component-button {
 
 section.ui-section-hero {
   min-height: 60vh;
+}
+
+img.product-image {
+  border: 2px solid var(--ui-color-n-300);
+  border-radius: 20px;
 }
