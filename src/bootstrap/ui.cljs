@@ -5,48 +5,62 @@
 
 (defonce state (r/atom {}))
 
-(defn component-editor []
+(defn component-edit-text [_state default-text _coordinates]
+  [:span default-text
+   [:span.edit-button
+    {:on-click (fn [ev]
+                 (.preventDefault ev)
+                 (.stopPropagation ev)
+                 (js/alert "edit mode"))}
+    "🖉"]])
+
+(defn component-style-editor []
   [:<>
    [:div "Page editor"]
    [:div "Hide this"]])
 
-(defn component-email-box [button-text subtext]
+(defn component-email-box [state]
   [:<>
    [:form {:action "/sign-up" :class "ui-component-form ui-layout-grid ui-layout-column-4"}
     [:input {:type "email" :placeholder "Email" :class "ui-component-input ui-component-input-medium" :required true}]
-    [:button {:type "submit" :class "ui-component-button ui-component-button-medium ui-component-button-primary"}
-     (or button-text "Join waitlist")]]
+    [:button {:type "submit"
+              :class "ui-component-button ui-component-button-medium ui-component-button-primary"
+              :on-click (fn [ev]
+                          (.preventDefault ev)
+                          (js/alert "The user's email will be stored when they click this button.")
+                          false)}
+     [component-edit-text state "Join waitlist" [:email-box :button-text]]]]
    [:p {:class "ui-text-note"}
-    [:small (or subtext "Some encouraging words.")]]])
+    [:small [component-edit-text state "Encouraging words here." [:email-box :encouraging-words]]]]])
 
 (defn component-product-image [classes]
   [:<>
    [:img.product-image {:src "/img/screenshot-1.png" :class classes}]
    "[EDIT]"])
 
-(defn component-cta-1 []
+(defn component-intro [state]
   [:div.ui-layout-container
    [:div.ui-layout-column-6.ui-layout-column-center
-    [:h1 "Your app name [EDIT]"]
+    [:h1 [component-edit-text state "Your app name" [:intro :title]]]
     [:p.ui-text-intro "Describe the value proposition of your app in a couple of sentences. [EDIT]"]
     [:div.ui-component-cta.ui-layout-flex
      ; [:a {:href "/start" :class "ui-component-button ui-component-button-normal ui-component-button-primary"} "Your CTA"]
-     [component-email-box "CTA button text [EDIT]" "Encouraging words [EDIT]"]]]
+     [component-email-box state]]]
    [component-product-image "ui-section-hero--image"]])
 
 (defn component-feature-screenshot [i]
   [:div {:class (if (= (mod i 2) 0) "ui-image-half-left" "ui-image-right-half")}
    [component-product-image]])
 
-(defn component-feature-description []
+(defn component-feature-description [state i]
   [:div
-   [:h2 "Feature title [EDIT]"]
-   [:p.ui-text-intro "Hello this is my intro text for this feature. [EDIT]"]
+   [:h2 [component-edit-text state "Feature title" [:features i :title]]]
+   [:p.ui-text-intro [component-edit-text state "Hello this is my intro text for this feature." [:features i :description]]]
    [:ul.ui-component-list.ui-component-list-feature.ui-layout-grid
     (for [t (range 4)]
       [:li.ui-component-list--item.ui-component-list--item-check
        {:key t}
-       (str "This is item " t " [EDIT]")])]])
+       [component-edit-text state (str "This is item " t) [:features i :list t]]])]])
 
 (defn component-features []
   [:div.ui-layout-container
@@ -57,18 +71,18 @@
         (if (= (mod i 2) 0)
           [:<>
            [component-feature-screenshot i]
-           [component-feature-description]]
+           [component-feature-description state i]]
           [:<>
            [component-feature-description]
            [component-feature-screenshot i]])]))])
 
-(defn component-cta-2 []
+(defn component-outro [state]
   [:div.ui-layout-container
    [:div.ui-layout-column-6.ui-layout-column-center
-    [:h2 "Closing message header [EDIT]"]
-    [:p.ui-text-intro "Put your closing message here. [EDIT]"]
+    [:h2 [component-edit-text state "Closing message header" [:outro :title]]]
+    [:p.ui-text-intro [component-edit-text state "Put your closing message here." [:outro :description]]]
     [:div.ui-component-cta.ui-layout-flex
-     [component-email-box "CTA button text [EDIT]" "Encouraging words [EDIT]"]]]
+     [component-email-box state]]]
    [component-product-image "ui-section-hero--image"]])
 
 (defn component-logo-edit [_state]
@@ -77,11 +91,11 @@
    "[EDIT]"])
 
 (defn start {:dev/after-load true} []
-  (rdom/render [component-editor state] (js/document.querySelector "#ui-overlay"))
+  (rdom/render [component-style-editor state] (js/document.querySelector "#ui-overlay"))
   (rdom/render [component-logo-edit state] (js/document.querySelector "#logo"))
-  (doseq [[q component] [["#cta-1" component-cta-1]
+  (doseq [[q component] [["#intro" component-intro]
                          ["#features" component-features]
-                         ["#cta-2" component-cta-2]]]
+                         ["#outro" component-outro]]]
     (rdom/render [component state] (js/document.querySelector q))))
 
 (defn main! []

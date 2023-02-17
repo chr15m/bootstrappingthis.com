@@ -1,3 +1,8 @@
+:root {
+  --edit-color: #8AC9BC;
+  --edit-color-lo: #6D9C92;
+}
+
 #ui-overlay {
   position: fixed;
   bottom: 0px;
@@ -5,13 +10,30 @@
   width: 350px;
   max-width: 80vw;
   max-height: 100vh;
-  background-color: #DCDCDC;
+  background-color: var(--edit-color);
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  border: 2px solid #414141;
+  border: 2px solid var(--edit-color-lo);
   box-shadow: 0px 0px 10px #353535;
   padding: 1em;
 }
 
 body {
+}
+
+.edit-button {
+  /*position: relative;
+  top: -0.5em;
+  right: -0.5em;
+  position: absolute;*/
+  position: absolute;
+  font-size: 1rem;
+  margin: 0px;
+  color: var(--edit-color);
+  background-color: white;
+  border: 2px solid var(--edit-color);
+  cursor: pointer;
+  border-radius: 100px;
+  padding: 8px;
+  box-shadow: 0px 0px 10px #353535;
 }
