@@ -3,9 +3,12 @@
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [applied-science.js-interop :as j]
+    [bootstrap.inline :refer [inline]]
     ["simply-beautiful" :as beautiful]))
 
 (defonce state (r/atom {}))
+
+(def styles (inline "public/style.css"))
 
 (defn download-page [state]
   (swap! state assoc :hide-ui true)
@@ -16,9 +19,8 @@
             html (.html beautiful html)
             a (.createElement js/document "a")
             body (.-body js/document)]
-        (j/assoc! a
-                  :download "index.html"
-                  :href (str "data:text/html;charset=UTF-8," (js/encodeURIComponent html)))
+        (.setAttribute a "download" "index.html")
+        (j/assoc! a :href (str "data:text/html;charset=UTF-8," (js/encodeURIComponent html)))
         (.appendChild body a)
         (.click a)
         (.removeChild body a)
@@ -112,8 +114,12 @@
      [component-email-box state]]]
    [component-product-image "ui-section-hero--image"]])
 
+(defn component-inline-styles [state]
+  (when (:hide-ui @state) (str styles)))
+
 (defn start {:dev/after-load true} []
   (rdom/render [component-style-editor state] (js/document.querySelector "#ui-overlay"))
+  (rdom/render [component-inline-styles state] (js/document.querySelector "#inline-styles"))
   (rdom/render [component-logo-edit state] (js/document.querySelector "#logo"))
   (doseq [[q component] [["#intro" component-intro]
                          ["#features" component-features]

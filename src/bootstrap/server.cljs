@@ -13,14 +13,6 @@
 
 (def template (fs/readFileSync "public/index.html"))
 
-(defn component-homepage []
-  [:<>
-   [:section.ui-section-hero
-    [:div.ui-layout-container
-     [:div.ui-layout-column-6.ui-layout-column-center
-      [:h1 "App loading."]]]]
-   [:script {:src "/js/main.js"}]])
-
 (defn start [_req res]
   (.send res
          (-> template
@@ -33,7 +25,9 @@
                          [:<>
                           [:link {:rel "stylesheet" :href "/overlay.css"}]
                           [:div#ui-overlay]
-                          [:script {:src "/js/main.js"}]]))]))))
+                          [:style {:id "inline-styles"}]
+                          [:script {:src "/js/main.js"
+                                    :id "editor-code"}]]))]))))
 
 (defn setup-routes [app]
   (web/reset-routes app)
