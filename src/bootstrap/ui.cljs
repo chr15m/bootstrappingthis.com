@@ -43,7 +43,7 @@
     [:div
      [:strong "Style"]
      [:p [:label [:input {:type :checkbox
-                          :value (-> @state :style :dark-mode)
+                          :checked (-> @state :style :dark-mode)
                           :on-change #(swap! state update-in [:style :dark-mode] not)}] " Dark mode"]]
      [:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
      [:button {:on-click #(download-page state)} "Download"]]))
