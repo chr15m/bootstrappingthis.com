@@ -28,14 +28,16 @@
         (swap! state assoc :hide-ui false)))
     100))
 
-(defn component-edit-text [state default-text _coordinates]
-  [:span default-text
+(defn component-edit-text [state default-text coordinates]
+  [:span (or (get-in @state coordinates) default-text)
    (when (not (:hide-ui @state))
      [:span.edit-button
       {:on-click (fn [ev]
                    (.preventDefault ev)
                    (.stopPropagation ev)
-                   (js/alert "edit mode"))}
+                   (let [new-value (js/prompt default-text default-text)]
+                     (when new-value
+                       (swap! state assoc-in coordinates new-value))))}
       "🖉"])])
 
 (defn component-style-editor [state]
