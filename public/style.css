@@ -74,7 +74,8 @@ TABLE OF CONTENT
   |
   ------------------------------------------------------------*/
 
-  --ui-typography-typeface: "Varela Round", serif;
+  --ui-typography-typeface: "Varela Round", sans-serif;
+  --ui-typography-typeface-h: "Fredoka One", sans-serif;
 
   /* FONT SIZE */
 
@@ -858,11 +859,11 @@ form { width: 100%; }
 }
 
 h1, h2 {
-  font-family: "Fredoka One";
+  font-family: var(--ui-typography-typeface-h);
 }
 
 a.ui-component-button, button {
-  font-family: "Fredoka One";
+  font-family: var(--ui-typography-typeface-h);
   letter-spacing: .05em;
   font-weight: normal;
 }
