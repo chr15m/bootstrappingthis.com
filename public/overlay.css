@@ -3,7 +3,7 @@
   --edit-color-lo: #6D9C92;
 }
 
-#ui-overlay {
+#ui-overlay > div {
   position: fixed;
   bottom: 0px;
   right: 0px;

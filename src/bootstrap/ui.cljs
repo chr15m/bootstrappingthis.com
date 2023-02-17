@@ -4,20 +4,24 @@
     [reagent.dom :as rdom]))
 
 (defonce state (r/atom {}))
+(tap> @state)
 
-(defn component-edit-text [_state default-text _coordinates]
+(defn component-edit-text [state default-text _coordinates]
   [:span default-text
-   [:span.edit-button
-    {:on-click (fn [ev]
-                 (.preventDefault ev)
-                 (.stopPropagation ev)
-                 (js/alert "edit mode"))}
-    "🖉"]])
+   (when (not (:hide-ui @state))
+     [:span.edit-button
+      {:on-click (fn [ev]
+                   (.preventDefault ev)
+                   (.stopPropagation ev)
+                   (js/alert "edit mode"))}
+      "🖉"])])
 
-(defn component-style-editor []
-  [:<>
-   [:div "Page editor"]
-   [:div "Hide this"]])
+(defn component-style-editor [state]
+  (when (not (:hide-ui @state))
+    [:div
+     [:div "Page editor"]
+     [:div "Hide this"]
+     [:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]]))
 
 (defn component-email-box [state]
   [:<>
@@ -42,7 +46,7 @@
   [:div.ui-layout-container
    [:div.ui-layout-column-6.ui-layout-column-center
     [:h1 [component-edit-text state "Your app name" [:intro :title]]]
-    [:p.ui-text-intro "Describe the value proposition of your app in a couple of sentences. [EDIT]"]
+    [:p.ui-text-intro [component-edit-text state "Describe the value proposition of your app in a couple of sentences." [:intro :description]]]
     [:div.ui-component-cta.ui-layout-flex
      ; [:a {:href "/start" :class "ui-component-button ui-component-button-normal ui-component-button-primary"} "Your CTA"]
      [component-email-box state]]]
@@ -62,7 +66,7 @@
        {:key t}
        [component-edit-text state (str "This is item " t) [:features i :list t]]])]])
 
-(defn component-features []
+(defn component-features [state]
   [:div.ui-layout-container
    (doall
      (for [i (range 3)]
@@ -73,7 +77,7 @@
            [component-feature-screenshot i]
            [component-feature-description state i]]
           [:<>
-           [component-feature-description]
+           [component-feature-description state i]
            [component-feature-screenshot i]])]))])
 
 (defn component-outro [state]
