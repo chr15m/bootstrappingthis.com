@@ -825,6 +825,24 @@ svg {
 
 /*** imported from "grid" theme ***/
 
+/*--------------------------------------------------------------
+|
+| 6.2 FORM
+|
+--------------------------------------------------------------*/
+
+input,
+button {
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--ui-typography-p);
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  text-rendering: inherit;
+  text-transform: none;
+}
+
 /* FORM */
 
 form { width: 100%; }

@@ -25,7 +25,8 @@
         (.appendChild body a)
         (.click a)
         (.removeChild body a)
-        (swap! state assoc :hide-ui false)))))
+        (swap! state assoc :hide-ui false)))
+    100))
 
 (defn component-edit-text [state default-text _coordinates]
   [:span default-text
@@ -40,7 +41,10 @@
 (defn component-style-editor [state]
   (when (not (:hide-ui @state))
     [:div
-     [:div "Style editor"]
+     [:strong "Style"]
+     [:p [:label [:input {:type :checkbox
+                          :value (-> @state :style :dark-mode)
+                          :on-change #(swap! state update-in [:style :dark-mode] not)}] " Dark mode"]]
      [:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
      [:button {:on-click #(download-page state)} "Download"]]))
 
@@ -116,12 +120,28 @@
    [component-product-image "ui-section-hero--image"]])
 
 (defn component-inline-styles [state]
-  (if (:hide-ui @state)
-    (str styles)
+  (str
+    (when (:hide-ui @state)
+      (str styles))
     (let [user-style (:style @state)]
-      (css [":root" {:--ui-color-brand (or (:brand-color user-style) "red")
-                     :--ui-typography-typeface-h "Varela Round"
-                     :--ui-typography-typeface "Arial"}]))))
+      (css [":root" (merge {:--ui-color-brand (or (:brand-color user-style) "red")
+                            :--ui-typography-typeface-h "Varela Round"
+                            :--ui-typography-typeface "Arial"}
+                           (if (:dark-mode user-style)
+                             {:--ui-color-n-000 "#1a1a1a"
+                              :--ui-color-n-025 "#050505"
+                              :--ui-color-n-050 "#0a0a0a"
+                              :--ui-color-n-100 "#141414"
+                              :--ui-color-n-300 "#aeaeae"
+                              :--ui-color-n-500 "#cacaca"
+                              :--ui-color-n-900 "#e5e5e5"}
+                             {:--ui-color-n-000 "#fff"
+                              :--ui-color-n-025 "#fafafa"
+                              :--ui-color-n-050 "#f5f5f5"
+                              :--ui-color-n-100 "#ebebeb"
+                              :--ui-color-n-300 "#aeaeae"
+                              :--ui-color-n-500 "#353535"
+                              :--ui-color-n-900 "#1a1a1a"}))]))))
 
 (defn start {:dev/after-load true} []
   (rdom/render [component-style-editor state] (js/document.querySelector "#ui-overlay"))
