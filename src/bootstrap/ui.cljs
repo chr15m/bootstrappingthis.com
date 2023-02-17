@@ -3,8 +3,9 @@
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [applied-science.js-interop :as j]
-    [bootstrap.inline :refer [inline]]
-    ["simply-beautiful" :as beautiful]))
+    [garden.core :refer [css]]
+    ["simply-beautiful" :as beautiful]
+    [bootstrap.inline :refer [inline]]))
 
 (defonce state (r/atom {}))
 
@@ -115,7 +116,12 @@
    [component-product-image "ui-section-hero--image"]])
 
 (defn component-inline-styles [state]
-  (when (:hide-ui @state) (str styles)))
+  (if (:hide-ui @state)
+    (str styles)
+    (let [user-style (:style @state)]
+      (css [":root" {:--ui-color-brand (or (:brand-color user-style) "red")
+                     :--ui-typography-typeface-h "Varela Round"
+                     :--ui-typography-typeface "Arial"}]))))
 
 (defn start {:dev/after-load true} []
   (rdom/render [component-style-editor state] (js/document.querySelector "#ui-overlay"))
