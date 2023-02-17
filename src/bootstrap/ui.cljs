@@ -1,10 +1,28 @@
 (ns bootstrap.ui
   (:require
     [reagent.core :as r]
-    [reagent.dom :as rdom]))
+    [reagent.dom :as rdom]
+    [applied-science.js-interop :as j]
+    ["simply-beautiful" :as beautiful]))
 
 (defonce state (r/atom {}))
-(tap> @state)
+
+(defn download-page [state]
+  (swap! state assoc :hide-ui true)
+  ; allow the UI time to update
+  (js/setTimeout
+    (fn []
+      (let [html (-> (js/XMLSerializer.) (.serializeToString js/document))
+            html (.html beautiful html)
+            a (.createElement js/document "a")
+            body (.-body js/document)]
+        (j/assoc! a
+                  :download "index.html"
+                  :href (str "data:text/html;charset=UTF-8," (js/encodeURIComponent html)))
+        (.appendChild body a)
+        (.click a)
+        (.removeChild body a)
+        (swap! state assoc :hide-ui false)))))
 
 (defn component-edit-text [state default-text _coordinates]
   [:span default-text
@@ -19,9 +37,14 @@
 (defn component-style-editor [state]
   (when (not (:hide-ui @state))
     [:div
-     [:div "Page editor"]
-     [:div "Hide this"]
-     [:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]]))
+     [:div "Style editor"]
+     [:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
+     [:button {:on-click #(download-page state)} "Download"]]))
+
+(defn component-logo-edit [_state]
+  [:<>
+   [:img {:src "icon.svg"}]
+   "[EDIT]"])
 
 (defn component-email-box [state]
   [:<>
@@ -88,11 +111,6 @@
     [:div.ui-component-cta.ui-layout-flex
      [component-email-box state]]]
    [component-product-image "ui-section-hero--image"]])
-
-(defn component-logo-edit [_state]
-  [:<>
-   [:img {:src "icon.svg"}]
-   "[EDIT]"])
 
 (defn start {:dev/after-load true} []
   (rdom/render [component-style-editor state] (js/document.querySelector "#ui-overlay"))
