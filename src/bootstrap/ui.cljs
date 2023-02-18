@@ -5,11 +5,14 @@
     [applied-science.js-interop :as j]
     [garden.core :refer [css]]
     ["simply-beautiful" :as beautiful]
+    ["react-color" :refer [BlockPicker]]
     [bootstrap.inline :refer [inline]]))
 
 (defonce state (r/atom {}))
 
 (def styles (inline "public/style.css"))
+
+(def color-palette #js ["#EE4747" "#697689" "#2CBFD5" "#ff8a65" "#ba68c8" "#64b964" "#DDB235" "#E55388" "#578BC8" "#5E9B8B"])
 
 (defn download-page [state]
   (swap! state assoc :hide-ui true)
@@ -43,11 +46,15 @@
 (defn component-style-editor [state]
   (when (not (:hide-ui @state))
     [:div
-     [:strong "Style"]
+     [:h3 "Style editor"]
      [:p [:label [:input {:type :checkbox
                           :checked (-> @state :style :dark-mode)
-                          :on-change #(swap! state update-in [:style :dark-mode] not)}] " Dark mode"]]
-     [:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
+                          :on-change #(swap! state update-in [:style :dark-mode] not)}] " Dark theme"]]
+     [:> BlockPicker {:color (or (-> @state :style :brand-color) (first color-palette))
+                      :triangle "hide"
+                      :colors color-palette
+                      :on-change-complete #(swap! state assoc-in [:style :brand-color] (j/get % :hex))}]
+     ;[:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
      [:button {:on-click #(download-page state)} "Download"]]))
 
 (defn component-logo-edit [_state]
@@ -126,7 +133,7 @@
     (when (:hide-ui @state)
       (str styles))
     (let [user-style (:style @state)]
-      (css [":root" (merge {:--ui-color-brand (or (:brand-color user-style) "red")
+      (css [":root" (merge {:--ui-color-brand (or (:brand-color user-style) (first color-palette))
                             :--ui-typography-typeface-h "Varela Round"
                             :--ui-typography-typeface "Arial"}
                            (if (:dark-mode user-style)
