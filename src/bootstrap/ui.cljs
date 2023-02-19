@@ -92,7 +92,7 @@
 
 (defn component-product-image [classes]
   [:<>
-   [:img.product-image {:src "/img/screenshot-1.png" :class classes}]
+   [:img.product-image {:src "/img/placeholder.png" :class classes}]
    "[EDIT]"])
 
 (defn component-intro [state]
