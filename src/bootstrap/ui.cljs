@@ -73,8 +73,11 @@
 
 (defn component-logo-edit [_state]
   [:<>
-   [:img {:src "icon.svg"}]
-   "[EDIT]"])
+   (when (not (:hide-ui @state))
+     [:button.edit-button
+      {:on-click #(js/alert "edit")}
+      [component-icon :pencil]])
+   [:img {:src "icon.svg"}]])
 
 (defn component-email-box [state]
   [:<>
@@ -92,8 +95,13 @@
 
 (defn component-product-image [classes]
   [:<>
-   [:img.product-image {:src "/img/placeholder.png" :class classes}]
-   "[EDIT]"])
+   [:div.product-image {:class classes}
+    [:div.product-image-edit
+     (when (not (:hide-ui @state))
+       [:button.edit-button
+        {:on-click #(js/alert "edit")}
+        [component-icon :pencil]])]
+    [:img {:src "/img/placeholder.jpg"}]]])
 
 (defn component-intro [state]
   [:div.ui-layout-container

@@ -890,7 +890,15 @@ section.ui-section-hero {
   min-height: 60vh;
 }
 
-img.product-image {
+.product-image {
   border: 1px solid var(--ui-color-n-300);
   border-radius: var(--ui-radius-product-image);
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-block;
 }
+
+.product-image img {
+  margin: 0px 0px;
+}
+

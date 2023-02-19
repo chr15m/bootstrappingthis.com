@@ -82,6 +82,14 @@ button svg path {
   fill: var(--edit-color-subtle);
 }
 
+.product-image-edit {
+  margin-bottom: -2em;
+  float: right;
+  position: relative;
+  left: -40px;
+  top: -10px;
+}
+
 span.icon {
   display: inline-block;
   width: 24px;
