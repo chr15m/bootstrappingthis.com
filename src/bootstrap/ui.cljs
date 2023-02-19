@@ -40,16 +40,17 @@
   [:span.icon {:ref #(when % (j/assoc! % :innerHTML (n icon)))}])
 
 (defn component-edit-text [state default-text coordinates]
-  [:span (or (get-in @state coordinates) default-text)
+  (let [value (or (get-in @state coordinates) default-text)]
+  [:span value
    (when (not (:hide-ui @state))
      [:button.edit-button
       {:on-click (fn [ev]
                    (.preventDefault ev)
                    (.stopPropagation ev)
-                   (let [new-value (js/prompt default-text default-text)]
+                   (let [new-value (js/prompt default-text value)]
                      (when new-value
                        (swap! state assoc-in coordinates new-value))))}
-      [component-icon :pencil]])])
+      [component-icon :pencil]])]))
 
 (defn component-style-editor [state]
   (when (not (:hide-ui @state))
