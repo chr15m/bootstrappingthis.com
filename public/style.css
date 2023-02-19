@@ -883,7 +883,6 @@ h1, h2 {
 
 a.ui-component-button, button {
   font-family: var(--ui-typography-typeface-h);
-  letter-spacing: .05em;
   font-weight: normal;
 }
 

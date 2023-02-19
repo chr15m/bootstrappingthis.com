@@ -14,6 +14,11 @@
 
 (def color-palette #js ["#EE4747" "#697689" "#2CBFD5" "#ff8a65" "#ba68c8" "#64b964" "#DDB235" "#E55388" "#578BC8" "#5E9B8B"])
 
+(def icon {:check (inline "src/sprites/check.svg")
+           :cross (inline "src/sprites/times.svg")
+           :pencil (inline "src/sprites/pencil.svg")
+           :download (inline "src/sprites/download.svg")})
+
 (defn download-page [state]
   (swap! state assoc :hide-ui true)
   ; allow the UI time to update
@@ -31,17 +36,20 @@
         (swap! state assoc :hide-ui false)))
     100))
 
+(defn component-icon [n]
+  [:span.icon {:ref #(when % (j/assoc! % :innerHTML (n icon)))}])
+
 (defn component-edit-text [state default-text coordinates]
   [:span (or (get-in @state coordinates) default-text)
    (when (not (:hide-ui @state))
-     [:span.edit-button
+     [:button.edit-button
       {:on-click (fn [ev]
                    (.preventDefault ev)
                    (.stopPropagation ev)
                    (let [new-value (js/prompt default-text default-text)]
                      (when new-value
                        (swap! state assoc-in coordinates new-value))))}
-      "🖉"])])
+      [component-icon :pencil]])])
 
 (defn component-style-editor [state]
   (when (not (:hide-ui @state))
@@ -58,7 +66,7 @@
                :on-change #(swap! state update-in [:style :dark-mode] not)}]
       [:label {:for "dark-theme"} " Dark theme"]]
      ;[:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
-     [:button {:on-click #(download-page state)} "Download"]]))
+     [:button {:on-click #(download-page state)} [component-icon :download] " Download"]]))
 
 (defn component-logo-edit [_state]
   [:<>
