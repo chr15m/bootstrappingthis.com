@@ -118,6 +118,7 @@ TABLE OF CONTENT
   --ui-radius-avatar: 5rem;
   --ui-radius-button: 5rem;
   --ui-radius-input : 5rem;
+  --ui-radius-product-image: 2rem;
 
 }
 
@@ -891,6 +892,6 @@ section.ui-section-hero {
 }
 
 img.product-image {
-  border: 2px solid var(--ui-color-n-300);
-  border-radius: 20px;
+  border: 1px solid var(--ui-color-n-300);
+  border-radius: var(--ui-radius-product-image);
 }

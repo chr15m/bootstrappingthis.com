@@ -1,22 +1,47 @@
 :root {
-  --edit-color: #8AC9BC;
-  --edit-color-lo: #6D9C92;
+  --edit-color: #fff;
+  --edit-color-lo: #9CC4BC;
 }
 
 #ui-overlay > div {
   position: fixed;
   bottom: 0px;
   right: 0px;
-  width: 350px;
   max-width: 80vw;
   max-height: 100vh;
   background-color: var(--edit-color);
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  border: 2px solid var(--edit-color-lo);
-  box-shadow: 0px 0px 10px #353535;
+  box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
   padding: 1em;
   color: #333;
+  background-color: #EEEEEE;
+  padding: 1em 2em;
+  font-family: Arial;
+}
+
+#ui-overlay > div > * {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+#ui-overlay h3 {
+}
+
+#ui-overlay button {
+  display: block;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+  background-color: #338000;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  border-bottom: 4px solid #2C6F00;
+  font-weight: 700;
+  color: white;
+  line-height: 26px;
+  margin: auto;
 }
 
 .edit-button {
@@ -31,11 +56,29 @@
   left: 1em;
   font-size: 1rem;
   margin: 0px;
-  color: var(--edit-color);
+  color: #777;
   background-color: white;
-  border: 2px solid var(--edit-color);
   cursor: pointer;
   border-radius: 100px;
   padding: 8px;
-  box-shadow: 0px 0px 10px #353535;
+  box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
+}
+
+/* https://css-tricks.com/the-checkbox-hack/ */
+
+#ui-overlay [type="checkbox"]:not(:checked),
+#ui-overlay [type="checkbox"]:checked {
+  position: absolute;
+  left: 0;
+  opacity: 0.01;
+}
+#ui-overlay [type="checkbox"]:not(:checked) + label,
+#ui-overlay [type="checkbox"]:checked + label {
+  cursor: pointer;
+}
+#ui-overlay [type="checkbox"]:checked + label:before {
+  content: "✅";
+}
+#ui-overlay [type="checkbox"]:not(:checked) + label:before {
+  content: "🟩";
 }
