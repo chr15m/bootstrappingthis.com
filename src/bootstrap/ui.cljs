@@ -64,7 +64,7 @@
 
 (defn component-email-box [state]
   [:<>
-   [:form {:action "/sign-up" :class "ui-component-form ui-layout-grid ui-layout-column-4"}
+   [:form {:action "/sign-up" :class "ui-component-form ui-layout-grid ui-layout-column-2"}
     [:input {:type "email" :placeholder "Email" :class "ui-component-input ui-component-input-medium" :required true}]
     [:button {:type "submit"
               :class "ui-component-button ui-component-button-medium ui-component-button-primary"
