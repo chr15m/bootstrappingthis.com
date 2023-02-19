@@ -2,28 +2,33 @@
   --edit-color: #338000;
   --edit-color-lo: #2C6F00;
   --edit-color-fg: #eee;
+  --edit-color-subtle: #777;
+  --edit-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
 #ui-overlay > div {
   position: fixed;
-  bottom: 0px;
-  right: 0px;
+  bottom: 20px;
+  right: 20px;
   max-width: 80vw;
   max-height: 100vh;
-  background-color: #fff;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
+  border-radius: 6px;
   padding: 1em;
   color: #333;
-  background-color: #EEEEEE;
+  background-color: var(--edit-color-fg);
+  box-shadow: var(--edit-shadow);
   padding: 1em 2em;
   font-family: Arial;
 }
 
-#ui-overlay > div > * {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+#ui-overlay fieldset {
+  padding: 0px;
+  margin: 0.5em 0px;
+  border: 0px;
+}
+
+#ui-overlay fieldset > * {
+  margin: 0.5em 0px;
 }
 
 #ui-overlay h3 {
@@ -35,7 +40,7 @@
   border: 0;
   cursor: pointer;
   background-color: var(--edit-color);
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 8px 16px;
   font-size: 16px;
   border-bottom: 4px solid var(--edit-color-lo);
@@ -49,15 +54,19 @@
   align-items: center;
 }
 
+button svg path {
+  fill: var(--edit-color-fg);
+}
+
 #ui-overlay button .icon {
   margin-right: 8px;
 }
 
 .edit-button {
-  background-color: var(--edit-color);
+  background-color: var(--edit-color-fg);
   float: right;
   position: absolute;
-  box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
+  box-shadow: var(--edit-shadow);
   display: inline-block;
   margin-left: 1em;
   width: 48px;
@@ -66,10 +75,11 @@
   border-radius: 24px;
   margin-top: -0.75em;
   cursor: pointer;
+  opacity: 0.75;
 }
 
-button svg path {
-  fill: var(--edit-color-fg);
+.edit-button svg path {
+  fill: var(--edit-color-subtle);
 }
 
 span.icon {
@@ -92,10 +102,23 @@ span.icon {
   cursor: pointer;
 }
 
+#ui-overlay [type="checkbox"] + label:before {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  text-align: center;
+  background-color: var(--edit-color);
+  color: var(--edit-color-fg);
+  border-radius: 6px;
+  margin-right: 0.5em;
+  content: "\00a0";
+}
+
 #ui-overlay [type="checkbox"]:checked + label:before {
-  content: "✅";
+  content: "✚";
+  font-weight: bold;
 }
 
 #ui-overlay [type="checkbox"]:not(:checked) + label:before {
-  content: "🟩";
+  background-color: var(--edit-color-subtle);
 }

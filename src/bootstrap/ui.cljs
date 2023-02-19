@@ -54,19 +54,21 @@
 (defn component-style-editor [state]
   (when (not (:hide-ui @state))
     [:div
-     [:h3 "Style editor"]
-     [:> BlockPicker {:color (or (-> @state :style :brand-color) (first color-palette))
-                      :triangle "hide"
-                      :colors color-palette
-                      :on-change-complete #(swap! state assoc-in [:style :brand-color] (j/get % :hex))}]
-     [:div
-      [:input {:id "dark-theme"
-               :type :checkbox
-               :checked (-> @state :style :dark-mode)
-               :on-change #(swap! state update-in [:style :dark-mode] not)}]
-      [:label {:for "dark-theme"} " Dark theme"]]
+     ;[:h3 "Style editor"]
+     [:fieldset
+      [:> BlockPicker {:color (or (-> @state :style :brand-color) (first color-palette))
+                       :triangle "hide"
+                       :colors color-palette
+                       :on-change-complete #(swap! state assoc-in [:style :brand-color] (j/get % :hex))}]
+      [:div
+       [:input {:id "dark-theme"
+                :type :checkbox
+                :checked (-> @state :style :dark-mode)
+                :on-change #(swap! state update-in [:style :dark-mode] not)}]
+       [:label {:for "dark-theme"} "Dark theme"]]]
      ;[:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
-     [:button {:on-click #(download-page state)} [component-icon :download] " Download"]]))
+     [:fieldset
+      [:button {:on-click #(download-page state)} [component-icon :download] "Download"]]]))
 
 (defn component-logo-edit [_state]
   [:<>
