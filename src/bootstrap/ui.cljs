@@ -22,6 +22,10 @@
            :up (inline "src/sprites/caret-up.svg")
            :down (inline "src/sprites/caret-down.svg")})
 
+(defn swap-items
+  [items i j]
+  (assoc items i (items j) j (items i)))
+
 (defn download-page [state]
   (swap! state assoc :hide-ui true)
   ; allow the UI time to update
@@ -129,37 +133,45 @@
       [:li.ui-component-list--item.ui-component-list--item-check
        {:key t}
        [component-edit-text state (str "This is item " t) [:features i :list t]]])]])
-
-(defn component-feature-edit [feature]
+ 
+(defn component-feature-edit [i c feature]
   (when (not (:hide-ui @state))
     [:div.button-row
-     [:button.edit-button
-      {:on-click (fn [ev]
-                   (.preventDefault ev)
-                   (.stopPropagation ev)
-                   (swap! state update-in [:features] conj {}))}
-      [component-icon :up]]
+     (when (> i 0)
+       [:button.edit-button
+        {:on-click (fn [ev]
+                     (.preventDefault ev)
+                     (.stopPropagation ev)
+                     (swap! state update-in [:features] swap-items i (dec i)))}
+        [component-icon :up]])
      [:button.edit-button {:on-click (fn [_ev]
                                        (when (js/confirm "Are you sure you want to delete this feature?")
                                          (swap! state update-in [:features] (fn [features] (vec (remove #(= % feature) features))))))}
       [component-icon :cross]]
-     [:button.edit-button {} [component-icon :down]]]))
+     (when (< i (dec c))
+       [:button.edit-button
+        {:on-click (fn [ev]
+                     (.preventDefault ev)
+                     (.stopPropagation ev)
+                     (swap! state update-in [:features] swap-items i (inc i)))}
+        [component-icon :down]])]))
 
 (defn component-features [state]
   [:div.ui-layout-container
    (doall
-     (for [i (range (count (:features @state)))]
-       [:<>
-        [:div.ui-section-feature__layout.ui-layout-grid.ui-layout-grid-2
-         {:key i}
-         (if (= (mod i 2) 0)
-           [:<>
-            [component-feature-screenshot i]
-            [component-feature-description state i]]
-           [:<>
-            [component-feature-description state i]
-            [component-feature-screenshot i]])
-         [component-feature-edit (get-in @state [:features i])]]]))
+     (let [c (count (:features @state))]
+       (for [i (range c)]
+         [:<>
+          [:div.ui-section-feature__layout.ui-layout-grid.ui-layout-grid-2
+           {:key i}
+           (if (= (mod i 2) 0)
+             [:<>
+              [component-feature-screenshot i]
+              [component-feature-description state i]]
+             [:<>
+              [component-feature-description state i]
+              [component-feature-screenshot i]])
+           [component-feature-edit i c (get-in @state [:features i])]]])))
    (when (not (:hide-ui @state))
      [:div.button-row
       [:button.edit-button
