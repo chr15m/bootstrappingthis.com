@@ -14,6 +14,8 @@
 
 (def color-palette #js ["#EE4747" "#697689" "#2CBFD5" "#ff8a65" "#ba68c8" "#64b964" "#DDB235" "#E55388" "#578BC8" "#5E9B8B"])
 
+(def fonts (js/JSON.parse (inline "public/fonts.json")))
+
 (def icon {:check (inline "src/sprites/check.svg")
            :cross (inline "src/sprites/times.svg")
            :pencil (inline "src/sprites/pencil.svg")
@@ -109,6 +111,20 @@
                 :on-change #(swap! state update-in [:style :dark-mode] not)}]
        [:label {:for "dark-theme"} "Dark theme"]]]
      ;[:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
+     [:fieldset
+      [:input {:list "font-list"
+               :placeholder "Header font"
+               :value (get-in @state [:style :brand-typeface-h])
+               :on-change #(swap! state assoc-in [:style :brand-typeface-h] (-> % .-target .-value))}]]
+     [:fieldset
+      [:input {:list "font-list"
+               :placeholder "Text font"
+               :value (get-in @state [:style :brand-typeface])
+               :on-change #(swap! state assoc-in [:style :brand-typeface] (-> % .-target .-value))}]]
+     [:datalist {:id "font-list"}
+      (doall
+        (for [f fonts]
+          [:option {:key (j/get f :family) :value (j/get f :family)}]))]
      [:fieldset
       [:button {:on-click #(download-page state)} [component-icon :download] "Download"]]
      [component-image-selection-modal state]]))
@@ -233,24 +249,26 @@
     (when (:hide-ui @state)
       (str styles))
     (let [user-style (:style @state)]
-      (css [":root" (merge {:--ui-color-brand (or (:brand-color user-style) (first color-palette))
-                            :--ui-typography-typeface-h "Varela Round"
-                            :--ui-typography-typeface "Arial"}
-                           (if (:dark-mode user-style)
-                             {:--ui-color-n-000 "#1a1a1a"
-                              :--ui-color-n-025 "#050505"
-                              :--ui-color-n-050 "#0a0a0a"
-                              :--ui-color-n-100 "#141414"
-                              :--ui-color-n-300 "#aeaeae"
-                              :--ui-color-n-500 "#cacaca"
-                              :--ui-color-n-900 "#e5e5e5"}
-                             {:--ui-color-n-000 "#fff"
-                              :--ui-color-n-025 "#fafafa"
-                              :--ui-color-n-050 "#f5f5f5"
-                              :--ui-color-n-100 "#ebebeb"
-                              :--ui-color-n-300 "#aeaeae"
-                              :--ui-color-n-500 "#353535"
-                              :--ui-color-n-900 "#1a1a1a"}))]))))
+      (str
+        (str "@import url('https://fonts.googleapis.com/css2?family=" (:brand-typeface-h user-style) "&family=" (:brand-typeface user-style) "&display=swap');\n")
+        (css [":root" (merge {:--ui-color-brand (or (:brand-color user-style) (first color-palette))
+                              :--ui-typography-typeface-h (pr-str (or (:brand-typeface-h user-style) "Varela Round"))
+                              :--ui-typography-typeface (pr-str (or (:brand-typeface user-style) "Arial"))}
+                             (if (:dark-mode user-style)
+                               {:--ui-color-n-000 "#1a1a1a"
+                                :--ui-color-n-025 "#050505"
+                                :--ui-color-n-050 "#0a0a0a"
+                                :--ui-color-n-100 "#141414"
+                                :--ui-color-n-300 "#aeaeae"
+                                :--ui-color-n-500 "#cacaca"
+                                :--ui-color-n-900 "#e5e5e5"}
+                               {:--ui-color-n-000 "#fff"
+                                :--ui-color-n-025 "#fafafa"
+                                :--ui-color-n-050 "#f5f5f5"
+                                :--ui-color-n-100 "#ebebeb"
+                                :--ui-color-n-300 "#aeaeae"
+                                :--ui-color-n-500 "#353535"
+                                :--ui-color-n-900 "#1a1a1a"}))])))))
 
 (defn start {:dev/after-load true} []
   (rdom/render [component-style-editor state] (js/document.querySelector "#ui-overlay"))

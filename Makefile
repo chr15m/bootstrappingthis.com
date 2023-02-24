@@ -1,9 +1,12 @@
-STATIC=public/*.html public/*.css public/img public/template public/icon.* # public/images public/assets
+STATIC=public/*.html public/*.css public/img public/template public/icon.* public/fonts.json # public/images public/assets
 
 all: build build/server.js
 
 build/server.js: src/**/*.cljs shadow-cljs.edn node_modules
 	npx shadow-cljs release server --debug
+
+public/fonts.json:
+	wget https://static.itch.io/fonts.json -O "$@"
 
 build: src/**/* $(STATIC)
 	mkdir -p build/public

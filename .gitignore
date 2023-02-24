@@ -2,6 +2,7 @@
 .shadow-cljs
 .clj-kondo/.cache
 public/js
+public/fonts.json
 database.sqlite
 devserver.js
 logs
