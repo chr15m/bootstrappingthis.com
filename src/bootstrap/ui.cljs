@@ -8,7 +8,7 @@
     ["react-color" :refer [BlockPicker]]
     [bootstrap.inline :refer [inline]]))
 
-(defonce state (r/atom {}))
+(defonce state (r/atom {:features [{} {}]}))
 
 (def styles (inline "public/style.css"))
 
@@ -17,7 +17,10 @@
 (def icon {:check (inline "src/sprites/check.svg")
            :cross (inline "src/sprites/times.svg")
            :pencil (inline "src/sprites/pencil.svg")
-           :download (inline "src/sprites/download.svg")})
+           :download (inline "src/sprites/download.svg")
+           :plus (inline "src/sprites/plus.svg")
+           :up (inline "src/sprites/caret-up.svg")
+           :down (inline "src/sprites/caret-down.svg")})
 
 (defn download-page [state]
   (swap! state assoc :hide-ui true)
@@ -130,7 +133,7 @@
 (defn component-features [state]
   [:div.ui-layout-container
    (doall
-     (for [i (range 3)]
+     (for [i (range (count (:features @state)))]
        [:div.ui-section-feature__layout.ui-layout-grid.ui-layout-grid-2
         {:key i}
         (if (= (mod i 2) 0)
@@ -139,11 +142,19 @@
            [component-feature-description state i]]
           [:<>
            [component-feature-description state i]
-           [component-feature-screenshot i]])]))])
+           [component-feature-screenshot i]])]))
+   (when (not (:hide-ui @state))
+     [:div.button-row
+      [:button.edit-button
+       {:on-click (fn [ev]
+                    (.preventDefault ev)
+                    (.stopPropagation ev)
+                    (swap! state update-in [:features] conj {}))}
+       [component-icon :plus]]])])
 
 (defn component-outro [state]
   [:div.ui-layout-container
-   [:div.ui-layout-column-6.ui-layout-column-center
+   [:div.ui-layout-column-center
     [:h2 [component-edit-text state "Closing message header" [:outro :title]]]
     [:p.ui-text-intro [component-edit-text state "Put your closing message here." [:outro :description]]]
     [:div.ui-component-cta.ui-layout-flex

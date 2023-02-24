@@ -82,6 +82,26 @@ button svg path {
   fill: var(--edit-color-subtle);
 }
 
+.button-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  min-height: 5em;
+  padding-top: 2em;
+}
+
+.button-row:hover {
+  background-color: #EBEBEB;
+}
+
+.button-row:nth-of-type(even) {
+  margin-top: 5em;
+}
+
+.ui-section-feature__layout:hover {
+  background-color: #EBEBEB;
+}
+
 .product-image-edit {
   margin-bottom: -2em;
   float: right;
