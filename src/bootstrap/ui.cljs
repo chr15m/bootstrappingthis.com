@@ -59,6 +59,40 @@
                        (swap! state assoc-in coordinates new-value))))}
       [component-icon :pencil]])]))
 
+(defn component-image-selection-modal [state]
+  (let [img (r/atom nil)
+        cancel-button [:button.neutral {:on-click (fn [_ev]
+                                                    (reset! img nil)
+                                                    (swap! state dissoc :image-select-modal))} "Cancel"]]
+    (fn []
+      (when (:image-select-modal @state)
+        [:div.modal
+         [:div.modal-inner
+          [:label {:for "uploader"} "Choose an image."]
+          [:input {:type "file"
+                   :id "uploader"
+                   :name "uploader"
+                   :accept "image/png,image/jpeg,image/gif,image/*,.gif,.jpg,.jpeg,.png"
+                   :on-change (fn [ev]
+                                (let [;reader (js/FileReader.)
+                                      file (-> ev .-target .-files first)]
+                                  ;(j/assoc! reader :onload (fn [fev] (reset! img (j/get-in fev [:target :result]))))
+                                  ;(.readAsDataURL reader file)
+                                  (reset! img (.createObjectURL js/URL file))))}]
+          [:div#preview (if @img
+                          [:<> 
+                           [:img {:src @img}]
+                           [:span.button-row
+                            cancel-button
+                            [:button {:on-click (fn [_ev]
+                                                  (swap! state
+                                                         #(-> %
+                                                              (assoc-in (:image-select-modal @state) @img)
+                                                              (dissoc :image-select-modal)))
+                                                  (reset! img nil))}
+                             "Use this image"]]]
+                          cancel-button)]]]))))
+
 (defn component-style-editor [state]
   (when (not (:hide-ui @state))
     [:div
@@ -76,7 +110,8 @@
        [:label {:for "dark-theme"} "Dark theme"]]]
      ;[:button {:on-click #(swap! state assoc :hide-ui true)} "Hide UI"]
      [:fieldset
-      [:button {:on-click #(download-page state)} [component-icon :download] "Download"]]]))
+      [:button {:on-click #(download-page state)} [component-icon :download] "Download"]]
+     [component-image-selection-modal state]]))
 
 (defn component-logo-edit [_state]
   [:<>
@@ -100,15 +135,15 @@
    [:p {:class "ui-text-note"}
     [:small [component-edit-text state "Encouraging words here." [:email-box :encouraging-words]]]]])
 
-(defn component-product-image [classes]
+(defn component-product-image [state classes coordinates]
   [:<>
    [:div.product-image {:class classes}
     [:div.product-image-edit
      (when (not (:hide-ui @state))
        [:button.edit-button
-        {:on-click #(js/alert "edit")}
+        {:on-click #(swap! state assoc :image-select-modal coordinates)}
         [component-icon :pencil]])]
-    [:img {:src "/img/placeholder.jpg"}]]])
+    [:img {:src (or (get-in @state coordinates) "/img/placeholder.jpg")}]]])
 
 (defn component-intro [state]
   [:div.ui-layout-container
@@ -118,11 +153,11 @@
     [:div.ui-component-cta.ui-layout-flex
      ; [:a {:href "/start" :class "ui-component-button ui-component-button-normal ui-component-button-primary"} "Your CTA"]
      [component-email-box state]]]
-   [component-product-image "ui-section-hero--image"]])
+   [component-product-image state "ui-section-hero--image" [:intro :hero-image]]])
 
 (defn component-feature-screenshot [i]
   [:div {:class (if (= (mod i 2) 0) "ui-image-half-left" "ui-image-right-half")}
-   [component-product-image]])
+   [component-product-image state nil [:features i :image]]])
 
 (defn component-feature-description [state i]
   [:div
@@ -188,7 +223,7 @@
     [:p.ui-text-intro [component-edit-text state "Put your closing message here." [:outro :description]]]
     [:div.ui-component-cta.ui-layout-flex
      [component-email-box state]]]
-   [component-product-image "ui-section-hero--image"]])
+   [component-product-image state "ui-section-hero--image" [:outro :hero-image]]])
 
 (defn component-inline-styles [state]
   (str
