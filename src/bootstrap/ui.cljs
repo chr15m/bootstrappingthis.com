@@ -130,19 +130,36 @@
        {:key t}
        [component-edit-text state (str "This is item " t) [:features i :list t]]])]])
 
+(defn component-feature-edit [feature]
+  (when (not (:hide-ui @state))
+    [:div.button-row
+     [:button.edit-button
+      {:on-click (fn [ev]
+                   (.preventDefault ev)
+                   (.stopPropagation ev)
+                   (swap! state update-in [:features] conj {}))}
+      [component-icon :up]]
+     [:button.edit-button {:on-click (fn [_ev]
+                                       (when (js/confirm "Are you sure you want to delete this feature?")
+                                         (swap! state update-in [:features] (fn [features] (vec (remove #(= % feature) features))))))}
+      [component-icon :cross]]
+     [:button.edit-button {} [component-icon :down]]]))
+
 (defn component-features [state]
   [:div.ui-layout-container
    (doall
      (for [i (range (count (:features @state)))]
-       [:div.ui-section-feature__layout.ui-layout-grid.ui-layout-grid-2
-        {:key i}
-        (if (= (mod i 2) 0)
-          [:<>
-           [component-feature-screenshot i]
-           [component-feature-description state i]]
-          [:<>
-           [component-feature-description state i]
-           [component-feature-screenshot i]])]))
+       [:<>
+        [:div.ui-section-feature__layout.ui-layout-grid.ui-layout-grid-2
+         {:key i}
+         (if (= (mod i 2) 0)
+           [:<>
+            [component-feature-screenshot i]
+            [component-feature-description state i]]
+           [:<>
+            [component-feature-description state i]
+            [component-feature-screenshot i]])
+         [component-feature-edit (get-in @state [:features i])]]]))
    (when (not (:hide-ui @state))
      [:div.button-row
       [:button.edit-button

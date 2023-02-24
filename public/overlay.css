@@ -102,6 +102,18 @@ button svg path {
   background-color: #EBEBEB;
 }
 
+.ui-section-feature__layout .button-row {
+  grid-column: span 3;
+  margin-top: -5em;
+  justify-content: center;
+}
+
+.ui-section-feature__layout .button-row .edit-button {
+  float: none;
+  position: relative;
+}
+
+
 .product-image-edit {
   margin-bottom: -2em;
   float: right;
