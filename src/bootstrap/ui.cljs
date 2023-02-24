@@ -116,10 +116,13 @@
 (defn component-logo-edit [_state]
   [:<>
    (when (not (:hide-ui @state))
-     [:button.edit-button
-      {:on-click #(js/alert "edit")}
-      [component-icon :pencil]])
-   [:img {:src "icon.svg"}]])
+     [:div.product-image-edit
+      [:button.edit-button
+       {:on-click (fn [ev]
+                    (.preventDefault ev)
+                    (swap! state assoc :image-select-modal [:page-icon]))}
+       [component-icon :pencil]]])
+   [:img {:src (or (:page-icon @state) "icon.svg")}]])
 
 (defn component-email-box [state]
   [:<>
